@@ -1,0 +1,47 @@
+name: Build DMT139z Dylib
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Cho phép chạy thủ công
+
+jobs:
+  build:
+    runs-on: macos-latest  # Chạy trên macOS để build dylib
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Theos
+      run: |
+        sudo mkdir -p /opt/theos
+        sudo git clone --recursive https://github.com/theos/theos.git /opt/theos
+        echo "THEOS=/opt/theos" >> $GITHUB_ENV
+        
+    - name: Install dependencies
+      run: |
+        brew install ldid xz
+        sudo /opt/theos/bin/nicify
+        
+    - name: Build dylib
+      run: |
+        make clean
+        make
+        make package
+        
+    - name: Upload dylib artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: DMT139z-dylib
+        path: packages/*.deb
+        retention-days: 30
+        
+    - name: Upload dylib directly
+      uses: actions/upload-artifact@v3
+      with:
+        name: DMT139z-raw
+        path: "*.dylib"
+        retention-days: 30
