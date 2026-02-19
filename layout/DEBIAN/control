@@ -1,0 +1,9 @@
+Package: com.dmt139z.freefire
+Name: DMT139z FreeFire Tool
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Advanced tool for FreeFire with ESP, Aimbot, Wallhack
+Maintainer: DMT139z
+Author: DMT139z
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
