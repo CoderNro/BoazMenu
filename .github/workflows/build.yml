@@ -55,3 +55,7 @@ jobs:
           **/*.plist
         retention-days: 30
         if-no-files-found: warn  # ✅ Cảnh báo nếu không tìm thấy file
+        - name: Prepare layout
+  run: |
+    mkdir -p layout/Library/MobileSubstrate/DynamicLibraries
+    cp DMT139z.plist layout/Library/MobileSubstrate/DynamicLibraries/ || true
