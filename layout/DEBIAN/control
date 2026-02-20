@@ -7,14 +7,3 @@ Maintainer: DMT139z
 Author: DMT139z
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000)
-cat > layout/DEBIAN/control << 'EOF'
-Package: com.dmt139z.freefire
-Name: DMT139z
-Version: 1.0
-Architecture: iphoneos-arm
-Description: FreeFire tool
-Maintainer: DMT139z
-Author: DMT139z
-Section: Tweaks
-Depends: mobilesubstrate
-EOF
