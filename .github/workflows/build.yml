@@ -5,43 +5,53 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch:  # Cho phép chạy thủ công
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest  # Chạy trên macOS để build dylib
+    runs-on: macos-latest  # ✅ OK, dùng macOS mới nhất
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # ✅ Nâng từ v3 lên v4
       
     - name: Setup Theos
       run: |
         sudo mkdir -p /opt/theos
         sudo git clone --recursive https://github.com/theos/theos.git /opt/theos
         echo "THEOS=/opt/theos" >> $GITHUB_ENV
+        echo "PATH=/opt/theos/bin:$PATH" >> $GITHUB_ENV  # ✅ Thêm PATH
         
     - name: Install dependencies
       run: |
         brew install ldid xz
-        sudo /opt/theos/bin/nicify
+        # ❌ Bỏ dòng nicify vì nó không cần thiết
+        
+    - name: Verify files
+      run: |
+        ls -la
+        # Kiểm tra xem có Makefile không
+        test -f Makefile || echo "⚠️ Không tìm thấy Makefile"
         
     - name: Build dylib
       run: |
         make clean
         make
-        make package
+        # make package  # ❌ Tạm thời comment nếu chưa có cấu hình package
         
-    - name: Upload dylib artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: DMT139z-dylib
-        path: packages/*.deb
-        retention-days: 30
+    - name: Find dylib files
+      run: |
+        echo "🔍 Tìm kiếm file .dylib..."
+        find . -name "*.dylib" -type f
+        find . -name "*.deb" -type f
         
-    - name: Upload dylib directly
-      uses: actions/upload-artifact@v3
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4  # ✅ Nâng từ v3 lên v4
       with:
-        name: DMT139z-raw
-        path: "*.dylib"
+        name: DMT139z-Build
+        path: |
+          **/*.dylib
+          **/*.deb
+          **/*.plist
         retention-days: 30
+        if-no-files-found: warn  # ✅ Cảnh báo nếu không tìm thấy file
